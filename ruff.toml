@@ -1,9 +1,16 @@
 line-length = 100
 
 [lint]
-# Default rules (pyflakes + a subset of pycodestyle) minus the layout opinions this
-# codebase deliberately breaks: paired statements are written on one line to keep the
-# OOXML-manipulation helpers compact and readable side by side.
+# Pyflakes + a subset of pycodestyle, stated explicitly rather than relying on ruff's
+# default. Ruff's default rule set widened from ~40 rules to ~400 in 0.16, so a repo
+# that leans on the default gets a different lint surface with each ruff release — and
+# a red badge on a commit that never changed. Pin the intent here; the CI job pins the
+# ruff version to match.
+select = ["E4", "E7", "E9", "F"]
+
+# Minus the layout opinions this codebase deliberately breaks: paired statements are
+# written on one line to keep the OOXML-manipulation helpers compact and readable
+# side by side.
 ignore = [
     "E401",  # multiple imports on one line
     "E402",  # import not at top of file (tests adjust sys.path first)

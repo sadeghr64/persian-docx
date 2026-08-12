@@ -20,7 +20,10 @@ jobs:
           python-version: "3.11"
 
       - name: Install ruff
-        run: pip install ruff
+        # Pinned: ruff's default rule set changes between releases. ruff.toml selects
+        # its rules explicitly, so an unpinned upgrade cannot silently add findings —
+        # but pinning keeps the badge honest about the exact tool that passed.
+        run: pip install ruff==0.16.2
 
       - name: Lint
         run: ruff check persian-docx/scripts tests

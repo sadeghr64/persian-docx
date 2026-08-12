@@ -2,8 +2,8 @@
 
 **An Agent Skill for producing Word documents in Persian/Farsi that actually render correctly.**
 
-[![tests](https://github.com/OWNER/persian-docx/actions/workflows/test.yml/badge.svg)](https://github.com/OWNER/persian-docx/actions/workflows/test.yml)
-[![lint](https://github.com/OWNER/persian-docx/actions/workflows/lint.yml/badge.svg)](https://github.com/OWNER/persian-docx/actions/workflows/lint.yml)
+[![tests](https://github.com/sadeghr64/persian-docx/actions/workflows/test.yml/badge.svg)](https://github.com/sadeghr64/persian-docx/actions/workflows/test.yml)
+[![lint](https://github.com/sadeghr64/persian-docx/actions/workflows/lint.yml/badge.svg)](https://github.com/sadeghr64/persian-docx/actions/workflows/lint.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-informational.svg)](LICENSE)
 
 <div dir="rtl">
@@ -87,7 +87,7 @@ overwritten, with a warning printed; pass `--no-clobber` to skip instead. See
 ### Claude Code
 
 ```bash
-git clone https://github.com/OWNER/persian-docx.git
+git clone https://github.com/sadeghr64/persian-docx.git
 cp -r persian-docx/persian-docx ~/.claude/skills/persian-docx
 ```
 

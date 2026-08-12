@@ -15,7 +15,7 @@
   ۴. فهرست خودکار با فیلد TOC + w:updateFields تا هنگام باز شدن به‌روز شود.
   ۵. در پاراگراف RTL، w:jc val="left" یعنی بصری راست‌چین؛ "right" یعنی چپ‌چین.
 """
-import os, re, csv, sys, io
+import os, re, csv, sys
 sys.stdout.reconfigure(encoding="utf-8")
 
 from docx import Document
@@ -722,7 +722,8 @@ def count_headings(text):
 
 # ---------------------------------------------------------------- تبدیل‌ها
 def convert_md(src, dst):
-    text = io.open(src, encoding="utf-8").read()
+    with open(src, encoding="utf-8") as f:
+        text = f.read()
     m = re.search(r"^#\s+(.*)$", text, re.M)
     title = re.sub(r"\*\*(.+?)\*\*", r"\1", m.group(1).strip()) if m else \
         os.path.splitext(os.path.basename(src))[0]
@@ -773,7 +774,7 @@ def add_records(doc, headers, data, full):
 
 
 def convert_csv(src, dst):
-    with io.open(src, encoding="utf-8-sig", newline="") as f:
+    with open(src, encoding="utf-8-sig", newline="") as f:
         rows = [r for r in csv.reader(f) if any(c.strip() for c in r)]
     headers, data = (rows[0], rows[1:]) if rows else ([], [])
     nc = len(headers)
