@@ -7,7 +7,7 @@ All notable changes to this skill are documented here. Format loosely follows
 Each entry records a rule and the observation behind it. **Rules that were tested and did not
 work are recorded too** — a negative result saves the next person the same experiment.
 
-## [1.0.0] — first public release
+## [1.0.0] — 2026-08-12 — first public release
 
 ### Added — the rule set (`SKILL.md`)
 
@@ -59,3 +59,8 @@ automatic TOC, footer with page numbers.
   replaced with generic ones.
 - `--no-clobber` was added, and overwrites are now reported rather than silent.
 - The verification workflow gained a LibreOffice path so it is no longer Windows-only.
+- `ruff.toml` selects its lint rules explicitly instead of inheriting ruff's default set,
+  which widened from roughly 40 rules to 400 in ruff 0.16. The CI job pins the ruff version
+  to match, so the badge reflects the code rather than the age of the toolchain.
+- `.gitattributes` normalises line endings to LF and marks `.docx` and other binaries as
+  binary, so contributors on different platforms don't produce whole-file diffs.
