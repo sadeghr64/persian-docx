@@ -1,0 +1,6 @@
+# Required to run the converter
+python-docx>=1.1.0
+
+# Optional — only for the verification workflow in SKILL.md §9
+# pymupdf>=1.24.0    # render the PDF to an image to inspect
+# fonttools>=4.50.0  # check whether a font actually carries a glyph

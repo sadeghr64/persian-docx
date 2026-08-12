@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# build artifacts
+*.zip
+*.skill
+
+# generated / test output
+*.docx
+*.pdf
+*.png
+~$*
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ...but the committed sample output is part of the repo
+!examples/sample.docx
+.ruff_cache/
+.pytest_cache/

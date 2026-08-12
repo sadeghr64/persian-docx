@@ -1,0 +1,43 @@
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Lint
+        run: ruff check persian-docx/scripts tests
+
+      - name: Validate the skill frontmatter
+        run: |
+          python - <<'PY'
+          import re, sys, pathlib
+          text = pathlib.Path("persian-docx/SKILL.md").read_text(encoding="utf-8")
+          m = re.match(r"^---\n(.*?)\n---\n", text, re.S)
+          assert m, "SKILL.md must start with YAML frontmatter"
+          fm = m.group(1)
+          name = re.search(r'^name:\s*(.+)$', fm, re.M).group(1).strip()
+          desc = re.search(r'^description:\s*(.+)$', fm, re.M).group(1).strip().strip('"')
+          assert re.fullmatch(r"[a-z0-9-]{1,64}", name), f"bad skill name: {name!r}"
+          assert len(desc) <= 200, f"description is {len(desc)} chars, limit is 200"
+          folder = pathlib.Path("persian-docx").name
+          assert name == folder, f"skill name {name!r} must match folder {folder!r}"
+          print(f"ok: name={name} description={len(desc)} chars")
+          PY

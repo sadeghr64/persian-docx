@@ -1,0 +1,13 @@
+line-length = 100
+
+[lint]
+# Default rules (pyflakes + a subset of pycodestyle) minus the layout opinions this
+# codebase deliberately breaks: paired statements are written on one line to keep the
+# OOXML-manipulation helpers compact and readable side by side.
+ignore = [
+    "E401",  # multiple imports on one line
+    "E402",  # import not at top of file (tests adjust sys.path first)
+    "E701",  # multiple statements on one line (colon)
+    "E702",  # multiple statements on one line (semicolon)
+    "E741",  # ambiguous variable name (l, I, O)
+]
