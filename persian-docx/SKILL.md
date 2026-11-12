@@ -1,6 +1,6 @@
 ---
 name: persian-docx
-description: "Create, edit or format Persian/Farsi Word documents with clear, concise, audience-appropriate prose and consistent terminology; preserve source meaning and protected quotations. Handle RTL/bidi layout, fonts, dates, numbers, tables of contents and Markdown/CSV conversion. نگارش، ویرایش و صفحه‌آرایی اسناد Word فارسی."
+description: "Create, edit and format Persian/Farsi Word documents with clear prose, faithful meaning and consistent terminology. Handle RTL/bidi layout, fonts, dates, numbers, TOCs and Markdown/CSV conversion."
 license: MIT
 ---
 
