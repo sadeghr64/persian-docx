@@ -7,6 +7,24 @@ All notable changes to this skill are documented here. Format loosely follows
 Each entry records a rule and the observation behind it. **Rules that were tested and did not
 work are recorded too** — a negative result saves the next person the same experiment.
 
+## [Unreleased]
+
+### Added
+
+- General-purpose Persian prose guide covering document-specific tone, concision,
+  non-mechanical removal of redundant emphasis, natural sentence structure, precise vocabulary
+  and consistent technical terminology.
+- Neutral editing examples, protection of source meaning and quotations, and a separate
+  editorial review before layout verification. Style references do not transfer organisational
+  identities or project-specific content.
+
+### Changed
+
+- Skill discovery description and workflow now include prose authoring and editing.
+- Clarified that formatting-only tasks preserve wording and that the converter does not
+  perform semantic editing. Existing Python code and layout rules are unchanged.
+- Installation notes now explain how to retain the linked reference guide.
+
 ## [1.0.0] — 2026-08-12 — first public release
 
 ### Added — the rule set (`SKILL.md`)
