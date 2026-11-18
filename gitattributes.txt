@@ -1,0 +1,9 @@
+# Normalise line endings so a Windows contributor and a Linux contributor don't
+# produce whole-file diffs against each other.
+* text=auto eol=lf
+
+# .docx is a zip. Treated as text it would be corrupted by eol conversion.
+*.docx binary
+*.pdf  binary
+*.png  binary
+*.zip  binary

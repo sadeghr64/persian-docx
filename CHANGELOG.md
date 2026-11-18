@@ -17,6 +17,10 @@ work are recorded too** — a negative result saves the next person the same exp
 - Neutral editing examples, protection of source meaning and quotations, and a separate
   editorial review before layout verification. Style references do not transfer organisational
   identities or project-specific content.
+- Formal report workflow for the final audience and decision, official source eligibility,
+  internal-data separation, draft review without revision churn, and four review passes.
+- Section-specific terminology selection with starter glossaries for process engineering,
+  investment appraisal, and legal/contractual writing; comparative examples include LPG and P&ID.
 
 ### Changed
 
@@ -24,6 +28,10 @@ work are recorded too** — a negative result saves the next person the same exp
 - Clarified that formatting-only tasks preserve wording and that the converter does not
   perform semantic editing. Existing Python code and layout rules are unchanged.
 - Installation notes now explain how to retain the linked reference guide.
+- Persian report prose now favours direct affirmative wording while preserving meaningful
+  negatives and qualifications. It removes literal syntax and redundant verbs without losing
+  distinct stages. In authored report text, ezafe after silent heh uses ZWNJ + yeh (`نقشه‌ی`)
+  by default; the writing agent checks the syntax and the existing converter preserves that form.
 
 ## [1.0.0] — 2026-08-12 — first public release
 

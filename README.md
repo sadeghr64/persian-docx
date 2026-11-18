@@ -54,12 +54,18 @@ same experiment isn't repeated. See [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Persian prose and editorial review
 
-For authoring or prose editing, the skill now includes a general-purpose
+For authoring or prose editing, the skill includes a general-purpose
 [Persian prose guide](persian-docx/references/persian-prose.md): audience-appropriate tone,
 concise sentences, removal of redundant emphasis, precise vocabulary, consistent terminology,
 source fidelity and an independent editorial review. Meaningful restrictions, uncertainty,
 negation and exceptions must survive editing; protected quotations are not rewritten for style.
 For formatting-only requests, preserve the supplied wording.
+
+For formal reports, the [report workflow](persian-docx/references/report-workflow.md)
+starts with the intended reader and decision, keeps project inputs separate from published
+sources, incorporates pre-issue feedback into the same report, and requires separate content,
+terminology, prose and final delivery reviews. Use the [section glossaries](persian-docx/references/report-terminology.md)
+for technical, financial and legal writing, and see the [before-and-after examples](persian-docx/references/report-examples.md).
 
 These are instructions for the writing agent, not automatic features of `fa_docx.py`.
 The converter and its layout rules are unchanged. Style examples do not supply organisational
@@ -74,6 +80,11 @@ identity, project data or substantive provisions for other documents.
 واژه‌گزینی بر دقت و تناسب با مخاطب استوار است، نه دشوارنویسی یا تغییر اصطلاحات ثابت.
 بازبینی نثر از کنترل صفحه‌آرایی جداست و اسکریپت تبدیل، ویرایش معنایی انجام نمی‌دهد.
 
+در گزارش رسمی، متن برای خواننده‌ی نهایی و تصمیم مورد انتظار نوشته می‌شود. هر فصل تخصصی
+واژه‌نامه‌ی حوزه‌ی خودش را دارد؛ داده‌ی داخلی مبنای تحلیل است و در کتاب‌نامه نمی‌آید.
+اصلاحات پیش از صدور در همان گزارش ادغام می‌شوند. رسم‌الخط گزارش، از جمله «نقشه‌ی» با
+نیم‌فاصله، در بازخوانی نثر و سپس در رندر Word بررسی می‌شود.
+
 </div>
 
 ## Repository layout
@@ -82,6 +93,9 @@ identity, project data or substantive provisions for other documents.
 |---|---|
 | `persian-docx/SKILL.md` | The skill itself — 12 sections: the six traps, fonts and sizes, three-layer RTL, alignment, bidi/LRM rules, glyph coverage, Persian typography, auto TOC, tables, the mandatory verification workflow, page setup, lessons index |
 | `persian-docx/references/persian-prose.md` | General Persian prose guidance, neutral examples and an editorial review checklist |
+| `persian-docx/references/report-workflow.md` | Audience, evidence, pre-issue revisions and the report review workflow |
+| `persian-docx/references/report-terminology.md` | Section-specific terminology selection and starter glossaries |
+| `persian-docx/references/report-examples.md` | Before-and-after report examples and semantic checks |
 | `persian-docx/scripts/fa_docx.py` | Reference converter — Markdown/CSV → Persian Word layout and typography; no semantic rewriting. Standard library plus `python-docx`, nothing else |
 | `examples/sample.md` → `sample.docx` | End-to-end sample: headings, tables, code blocks, callouts, lists, links, dates, numbers |
 | `tests/test_rules.py` | Asserts the generated OOXML obeys the skill. Runs in CI on Python 3.9–3.13 |
@@ -140,8 +154,8 @@ Then **Customize → Skills** in the Claude app, and add the zip. The skill fold
 `SKILL.md` follows the Agent Skills open format — plain Markdown with YAML frontmatter
 (`name`, `description`). Nothing in the body depends on any particular vendor, so it is
 portable to anything that reads instruction files. Keep `references/` alongside `SKILL.md`
-when copying it; when pasting the skill body, also provide the linked prose guide or an
-accessible path to it:
+when copying it; when pasting the skill body, also provide its linked guides or accessible
+paths to them:
 
 | Tool | How |
 |---|---|
