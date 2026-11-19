@@ -11,6 +11,20 @@ work are recorded too** — a negative result saves the next person the same exp
 
 ### Added
 
+- Report structure and section-level tone for ten report types, with a separate business plan
+  and feasibility study guide and a review of their published sources. The choice of SWOT or
+  another analysis tool follows the decision and available evidence.
+- Comparable examples for both editing stages and an independent text comparison for a decision memo.
+- Glossaries for business plans, feasibility studies and recurring report disciplines.
+- First-use English term footnotes restart at 1 on each page; continuous report prose is justified by default.
+
+- A post-content heading review for formal reports, including TOC and cross-reference checks,
+  and guidance for keeping the requested comparison baseline separate from official revisions.
+- Persian method-to-result examples for choosing idiomatic verbs without overstating evidence.
+
+- Meaning-first Persian rewrite method with a two-way fidelity check, a reader comprehension
+  check and a review of optional Persian NLP tools. No new runtime dependencies.
+
 - General-purpose Persian prose guide covering document-specific tone, concision,
   non-mechanical removal of redundant emphasis, natural sentence structure, precise vocabulary
   and consistent technical terminology.
@@ -24,6 +38,11 @@ work are recorded too** — a negative result saves the next person the same exp
 
 ### Changed
 
+- Formal report authoring now starts with a section plan and a structural review, then checks
+  terminology, natural Persian prose, fidelity to the evidence and final delivery separately.
+- Added a pre-delivery prose gate for report authoring, with a sentence-by-sentence review of
+  avoidable negatives, direct instructions to readers, and unclear relations between findings
+  and evidence. Added a market report example separating observed supply, limits, and counting criteria.
 - Skill discovery description and workflow now include prose authoring and editing.
 - Clarified that formatting-only tasks preserve wording and that the converter does not
   perform semantic editing. Existing Python code and layout rules are unchanged.

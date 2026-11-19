@@ -63,9 +63,14 @@ For formatting-only requests, preserve the supplied wording.
 
 For formal reports, the [report workflow](persian-docx/references/report-workflow.md)
 starts with the intended reader and decision, keeps project inputs separate from published
-sources, incorporates pre-issue feedback into the same report, and requires separate content,
-terminology, prose and final delivery reviews. Use the [section glossaries](persian-docx/references/report-terminology.md)
+sources and incorporates pre-issue feedback into the same report. Design the opening, body and
+conclusion with the [report structure guide](persian-docx/references/report-structure.md), then
+review the prose separately. The [business plan and feasibility guide](persian-docx/references/report-business-appraisal.md)
+matches analytical tools to the decision. Use the [section glossaries](persian-docx/references/report-terminology.md)
 for technical, financial and legal writing, and see the [before-and-after examples](persian-docx/references/report-examples.md).
+For awkward or formulaic drafts, the [Persian rewrite method](persian-docx/references/persian-rewrite.md)
+rebuilds paragraphs from their claims and evidence, then checks readability and meaning separately.
+It also records which optional Persian text tools to use for typography and why they are not required.
 
 These are instructions for the writing agent, not automatic features of `fa_docx.py`.
 The converter and its layout rules are unchanged. Style examples do not supply organisational
@@ -85,6 +90,10 @@ identity, project data or substantive provisions for other documents.
 اصلاحات پیش از صدور در همان گزارش ادغام می‌شوند. رسم‌الخط گزارش، از جمله «نقشه‌ی» با
 نیم‌فاصله، در بازخوانی نثر و سپس در رندر Word بررسی می‌شود.
 
+ابتدا بر اساس [نوع گزارش](persian-docx/references/report-structure.md)، ساختار، محتوای هر بخش و لحن آن
+را طرح‌ریزی کنید. سپس متن را از نظر روانی و دقت بازنویسی کنید. [راهنمای طرح کسب‌وکار و امکان‌سنجی](persian-docx/references/report-business-appraisal.md)
+به انتخاب روش تحلیل بر اساس پرسش گزارش کمک می‌کند.
+
 </div>
 
 ## Repository layout
@@ -94,8 +103,12 @@ identity, project data or substantive provisions for other documents.
 | `persian-docx/SKILL.md` | The skill itself — 12 sections: the six traps, fonts and sizes, three-layer RTL, alignment, bidi/LRM rules, glyph coverage, Persian typography, auto TOC, tables, the mandatory verification workflow, page setup, lessons index |
 | `persian-docx/references/persian-prose.md` | General Persian prose guidance, neutral examples and an editorial review checklist |
 | `persian-docx/references/report-workflow.md` | Audience, evidence, pre-issue revisions and the report review workflow |
+| `persian-docx/references/report-structure.md` | Opening, body, conclusion and section tone across ten report types |
+| `persian-docx/references/report-business-appraisal.md` | Business plans, feasibility studies and selection of appraisal tools |
+| `persian-docx/references/report-source-review.md` | Published samples and guidance used to design the report structures |
 | `persian-docx/references/report-terminology.md` | Section-specific terminology selection and starter glossaries |
 | `persian-docx/references/report-examples.md` | Before-and-after report examples and semantic checks |
+| `persian-docx/references/persian-rewrite.md` | Meaning-first Persian rewriting, review criteria and optional tools |
 | `persian-docx/scripts/fa_docx.py` | Reference converter — Markdown/CSV → Persian Word layout and typography; no semantic rewriting. Standard library plus `python-docx`, nothing else |
 | `examples/sample.md` → `sample.docx` | End-to-end sample: headings, tables, code blocks, callouts, lists, links, dates, numbers |
 | `tests/test_rules.py` | Asserts the generated OOXML obeys the skill. Runs in CI on Python 3.9–3.13 |
