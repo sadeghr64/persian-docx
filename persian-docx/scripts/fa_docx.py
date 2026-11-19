@@ -713,7 +713,7 @@ def render_md(doc, text, full):
                     or re.match(r"^\d+[.)]\s", nx) or re.fullmatch(r"-{3,}", nx)):
                 break
             buf.append(nx); i += 1
-        emit_inline(para(doc, after=6), " ".join(buf))
+        emit_inline(para(doc, align="justify", after=6), " ".join(buf))
 
 
 def count_headings(text):
