@@ -72,9 +72,11 @@ For awkward or formulaic drafts, the [Persian rewrite method](persian-docx/refer
 rebuilds paragraphs from their claims and evidence, then checks readability and meaning separately.
 It also records which optional Persian text tools to use for typography and why they are not required.
 
-These are instructions for the writing agent, not automatic features of `fa_docx.py`.
-The converter and its layout rules are unchanged. Style examples do not supply organisational
-identity, project data or substantive provisions for other documents.
+For authoring or rewriting a report, start with the [built-in report delivery workflow](persian-docx/references/report-delivery.md).
+The same agent plans, edits and rereads the report. The local `report_delivery.py` command
+checks observable issues and requires an editorial record for the exact draft before exporting
+Word. It needs no separate proofreading service or model. A successful check does not certify
+the prose or verify evidence. Use `fa_docx.py` for conversion only.
 
 <div dir="rtl">
 
@@ -94,6 +96,10 @@ identity, project data or substantive provisions for other documents.
 را طرح‌ریزی کنید. سپس متن را از نظر روانی و دقت بازنویسی کنید. [راهنمای طرح کسب‌وکار و امکان‌سنجی](persian-docx/references/report-business-appraisal.md)
 به انتخاب روش تحلیل بر اساس پرسش گزارش کمک می‌کند.
 
+برای تألیف یا بازنویسی گزارش، [مسیر داخلی تولید و تحویل](persian-docx/references/report-delivery.md)
+را اجرا کنید. فایل Word از همان پیش‌نویسی ساخته می‌شود که بازخوانی و ثبت شده است. برای تبدیل
+صرف، مبدل مستقیم مناسب است؛ متن را بازنویسی نمی‌کند.
+
 </div>
 
 ## Repository layout
@@ -103,12 +109,14 @@ identity, project data or substantive provisions for other documents.
 | `persian-docx/SKILL.md` | The skill itself — 12 sections: the six traps, fonts and sizes, three-layer RTL, alignment, bidi/LRM rules, glyph coverage, Persian typography, auto TOC, tables, the mandatory verification workflow, page setup, lessons index |
 | `persian-docx/references/persian-prose.md` | General Persian prose guidance, neutral examples and an editorial review checklist |
 | `persian-docx/references/report-workflow.md` | Audience, evidence, pre-issue revisions and the report review workflow |
+| `persian-docx/references/report-delivery.md` | Internal authoring and editorial checks before export |
 | `persian-docx/references/report-structure.md` | Opening, body, conclusion and section tone across ten report types |
 | `persian-docx/references/report-business-appraisal.md` | Business plans, feasibility studies and selection of appraisal tools |
 | `persian-docx/references/report-source-review.md` | Published samples and guidance used to design the report structures |
 | `persian-docx/references/report-terminology.md` | Section-specific terminology selection and starter glossaries |
 | `persian-docx/references/report-examples.md` | Before-and-after report examples and semantic checks |
-| `persian-docx/references/persian-rewrite.md` | Meaning-first Persian rewriting, review criteria and optional tools |
+| `persian-docx/references/persian-rewrite.md` | Meaning-first Persian rewriting and review criteria |
+| `persian-docx/scripts/report_delivery.py` | Prepare, check and export the exact reviewed report draft locally |
 | `persian-docx/scripts/fa_docx.py` | Reference converter — Markdown/CSV → Persian Word layout and typography; no semantic rewriting. Standard library plus `python-docx`, nothing else |
 | `examples/sample.md` → `sample.docx` | End-to-end sample: headings, tables, code blocks, callouts, lists, links, dates, numbers |
 | `tests/test_rules.py` | Asserts the generated OOXML obeys the skill. Runs in CI on Python 3.9–3.13 |
@@ -120,7 +128,7 @@ identity, project data or substantive provisions for other documents.
 ```bash
 pip install -r requirements.txt
 
-# one file
+# Convert existing text without editorial review
 python persian-docx/scripts/fa_docx.py --file report.md
 
 # a whole tree of .md and .csv files
