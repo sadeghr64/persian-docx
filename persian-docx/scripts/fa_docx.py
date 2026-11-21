@@ -262,10 +262,12 @@ def add_hyperlink(p, url, text, size=SZ_BODY - 1):
 
 # ---------------------------------------------------------------- inline
 TOKEN = re.compile(r"(\*\*.+?\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\))", re.S)
+REPORT_TOKEN = re.compile(TOKEN.pattern[:-1] + r"|\^\[[^\]\r\n]+\])", re.S)
 
 
 def emit_inline(p, text, size=SZ_BODY, color=INK, base_bold=False, font=F_BODY):
-    for tok in TOKEN.split(text):
+    terms = getattr(p.part, "_report_term_notes", None)
+    for tok in (REPORT_TOKEN if terms is not None else TOKEN).split(text):
         if not tok:
             continue
         if tok.startswith("**") and tok.endswith("**") and len(tok) > 4:
@@ -273,6 +275,14 @@ def emit_inline(p, text, size=SZ_BODY, color=INK, base_bold=False, font=F_BODY):
         elif tok.startswith("`") and tok.endswith("`") and len(tok) > 2:
             # قطعه کد با RLM محصور می‌شود تا مرزش با متن فارسی اطراف مخدوش نشود
             run(p, RLM + tok[1:-1] + RLM, size=size - 1.5, color=BLUE, font=F_MONO, rtl=False)
+        elif terms is not None and tok.startswith("^["):
+            from word_footnotes import add_english_footnote
+            english = tok[2:-1].strip()
+            if english.casefold() not in terms:
+                # Make a separate zero-text anchor to keep the reference at the current insertion
+                # point, including when the preceding Persian term is inside a link.
+                add_english_footnote(p.add_run(), english)
+                terms.add(english.casefold())
         elif tok.startswith("[") and "](" in tok:
             label, url = tok[1:-1].split("](", 1)
             if url.startswith(("http://", "https://")):
@@ -432,7 +442,7 @@ def heading(doc, level, text):
         p.style = doc.styles["Heading 1"]
         _rtl_para(p); set_align(p, "right")
         _para_border(p, ("bottom",), sz=18, color="C8922A")
-        emit_inline(p, text, size=SZ_H1, color=BRAND_D, font=F_TITR)
+        emit_inline(p, text, size=SZ_H1, color=BRAND_D, base_bold=True, font=F_TITR)
         for r in p.runs: r.font.color.rgb = BRAND_D
     elif level == 2:
         p = para(doc, before=16, after=6, ls=1.3)
@@ -470,6 +480,41 @@ def numbered(doc, num, text, size=SZ_BODY):
     run(p, f"{fa_digits(num)}. ", size=size, color=BRAND_D, bold=True)
     emit_inline(p, text, size=size)
     return p
+
+
+def report_list(doc, text, *, start=None, number_id=None):
+    """Use editable Word numbering for authored report lists."""
+    if number_id is None:
+        root = doc.part.numbering_part.element
+        ident = 1 + max([0] + [int(n.get(qn("w:abstractNumId"))) for n in root.findall(qn("w:abstractNum"))])
+
+        def node(parent, name, **attrs):
+            item = OxmlElement("w:" + name)
+            for key, value in attrs.items():
+                item.set(qn("w:" + key), str(value))
+            parent.append(item)
+            return item
+
+        abstract = node(root, "abstractNum", abstractNumId=ident)
+        first_num = root.find(qn("w:num"))
+        if first_num is not None:
+            first_num.addprevious(abstract)
+        node(abstract, "multiLevelType", val="singleLevel")
+        level = node(abstract, "lvl", ilvl=0)
+        node(level, "start", val=start if start is not None else 1)
+        node(level, "numFmt", val="decimal" if start is not None else "bullet")
+        node(level, "suff", val="space")
+        node(level, "lvlText", val="%1." if start is not None else "\u2022")
+        node(level, "lvlJc", val="right")
+        node(node(level, "pPr"), "ind", right=400, hanging=220)
+        node(node(level, "rPr"), "rFonts", ascii=F_BODY, hAnsi=F_BODY, cs=F_BODY)
+        number_id = root.add_num(ident).numId
+    p = para(doc, after=3, ls=1.4)
+    num = p._p.get_or_add_pPr().get_or_add_numPr()
+    num.get_or_add_ilvl().val = 0
+    num.get_or_add_numId().val = number_id
+    emit_inline(p, text)
+    return number_id
 
 
 def hrule(doc):
@@ -539,7 +584,7 @@ def enable_update_fields(doc):
         e.set(qn("w:val"), "true")
 
 
-def add_toc(doc, full, levels="1-3"):
+def add_toc(doc, full, levels="1-3", *, separate_page=True):
     # عنوان فهرست عمداً سبک Heading نمی‌گیرد تا داخل خودِ فهرست ظاهر نشود
     t = para(doc, before=4, after=8, ls=1.3)
     _para_border(t, ("bottom",), sz=12, color="C8922A")
@@ -557,17 +602,17 @@ def add_toc(doc, full, levels="1-3"):
             t = OxmlElement("w:instrText"); t.set(qn("xml:space"), "preserve"); t.text = txt
             r.append(t)
         p._p.append(r)
-    run(p, "برای به‌روزرسانی فهرست: Ctrl+A سپس F9", size=SZ_BODY - 2, color=MUTED, italic=True)
     r = OxmlElement("w:r")
     f = OxmlElement("w:fldChar"); f.set(qn("w:fldCharType"), "end"); r.append(f)
     p._p.append(r)
     # شکست صفحه پس از فهرست — با pageBreakBefore، نه پاراگراف خالیِ حاوی break:
     # پاراگراف خالی + WD_BREAK.PAGE یک صفحه کاملاً خالی می‌سازد — SKILL.md §۷-۱.
-    bp = doc.add_paragraph()
-    pf = bp.paragraph_format
-    pf.page_break_before = True
-    pf.space_before = pf.space_after = Pt(0); pf.line_spacing = 1
-    bp.add_run().font.size = Pt(1)
+    if separate_page:
+        bp = doc.add_paragraph()
+        pf = bp.paragraph_format
+        pf.page_break_before = True
+        pf.space_before = pf.space_after = Pt(0); pf.line_spacing = 1
+        bp.add_run().font.size = Pt(1)
 
 
 def cover(doc, title, subtitle, full):
@@ -650,14 +695,19 @@ def is_sep(line):
     return bool(s) and all(set(c.strip()) <= set("-: ") and "-" in c for c in s.split("|"))
 
 
-def render_md(doc, text, full):
+def render_md(doc, text, full, *, report=False):
     lines = text.split("\n")
     i, n = 0, len(lines)
     skipped_h1 = False
+    list_kind, list_id = None, None
     while i < n:
         s = lines[i].strip()
         if not s:
             i += 1; continue
+        kind = ("number" if re.match(r"^\d+[.)]\s+", s) else
+                "bullet" if re.match(r"^[-*]\s+", s) else None)
+        if list_kind != kind:
+            list_kind, list_id = kind, None
 
         if s.startswith("```"):
             j = i + 1; buf = []
@@ -673,7 +723,7 @@ def render_md(doc, text, full):
             lvl, txt = len(m.group(1)), m.group(2).strip()
             if lvl == 1 and not skipped_h1:
                 skipped_h1 = True; i += 1; continue
-            heading(doc, min(lvl, 4), txt); i += 1; continue
+            heading(doc, min(lvl - 1 if report else lvl, 4), txt); i += 1; continue
 
         if s.startswith("|") and i + 1 < n and is_sep(lines[i + 1]):
             headers = split_row(s)
@@ -700,11 +750,19 @@ def render_md(doc, text, full):
 
         m = re.match(r"^[-*]\s+(.*)$", s)
         if m:
-            bullet(doc, m.group(1)); i += 1; continue
+            if report:
+                list_id = report_list(doc, m.group(1), number_id=list_id)
+            else:
+                bullet(doc, m.group(1))
+            i += 1; continue
 
         m = re.match(r"^(\d+)[.)]\s+(.*)$", s)
         if m:
-            numbered(doc, m.group(1), m.group(2)); i += 1; continue
+            if report:
+                list_id = report_list(doc, m.group(2), start=int(m.group(1)), number_id=list_id)
+            else:
+                numbered(doc, m.group(1), m.group(2))
+            i += 1; continue
 
         buf = [s]; i += 1
         while i < n:
@@ -713,7 +771,12 @@ def render_md(doc, text, full):
                     or re.match(r"^\d+[.)]\s", nx) or re.fullmatch(r"-{3,}", nx)):
                 break
             buf.append(nx); i += 1
-        emit_inline(para(doc, align="justify", after=6), " ".join(buf))
+        paragraph = " ".join(buf)
+        if report and re.match(r"^(?:منبع|منابع|مأخذ)\s*:", paragraph):
+            prev = doc.paragraphs[-1] if doc.paragraphs else None
+            if prev is not None and prev.text.strip():
+                prev.paragraph_format.keep_with_next = True
+        emit_inline(para(doc, align="justify", after=6), paragraph)
 
 
 def count_headings(text):
@@ -722,24 +785,51 @@ def count_headings(text):
 
 # ---------------------------------------------------------------- تبدیل‌ها
 def convert_md(src, dst):
-    with open(src, encoding="utf-8") as f:
+    with open(src, encoding="utf-8-sig") as f:
         text = f.read()
+    convert_md_text(text, dst, fallback_title=os.path.splitext(os.path.basename(src))[0])
+
+
+def convert_md_text(text, dst, *, fallback_title="", report=False):
     m = re.search(r"^#\s+(.*)$", text, re.M)
     title = re.sub(r"\*\*(.+?)\*\*", r"\1", m.group(1).strip()) if m else \
-        os.path.splitext(os.path.basename(src))[0]
+        fallback_title
     sub = ""
     if m:
-        for ln in text[m.end():].lstrip("\n").split("\n")[:4]:
-            if ln.strip().startswith("**"):
-                sub = re.sub(r"\*\*", "", ln.strip()); break
+        # Only an isolated, fully bold line directly after the title is a subtitle.
+        # A bold opening sentence inside the body stays where the author put it.
+        match = re.match(r"\n(?:[ \t]*\n)*[ \t]*\*\*([^*\n]+)\*\*[ \t]*(?=\n|$)", text[m.end():])
+        if match:
+            sub = match.group(1).strip()
+            text = text[:m.end()] + text[m.end() + match.end():]
     ncols = max([len(split_row(l)) for l in text.split("\n") if l.strip().startswith("|")] or [0])
-    doc = new_doc(landscape=(ncols >= 8))
+    doc = new_doc(landscape=(ncols >= (6 if report else 8)))
     full = page_full(doc)
-    cover(doc, title, sub, full)
-    if count_headings(text) >= 4:
-        add_toc(doc, full)
+    if report:
+        doc.part._report_term_notes = set()
+        _style_font(doc.styles["Title"], F_TITR, 20, True, BRAND_D)
+        title_props = doc.styles["Title"].element.get_or_add_pPr()
+        border = title_props.find(qn("w:pBdr"))
+        if border is not None:
+            title_props.remove(border)
+        p = para(doc, after=6, ls=1.25)
+        p.style = doc.styles["Title"]
+        emit_inline(p, title, size=20, color=BRAND_D, base_bold=True, font=F_TITR)
+        if sub:
+            emit_inline(para(doc, after=9), sub, color=SLATE)
+    else:
+        cover(doc, title, sub, full)
+    heads = (len(re.findall(r"^##\s+\S.*$", text, re.M)) if report else count_headings(text))
+    if heads >= 4:
+        add_toc(doc, full, levels="1-1" if report else "1-3", separate_page=not report)
         enable_update_fields(doc)
-    render_md(doc, text, full)
+    start = len(doc.paragraphs)
+    render_md(doc, text, full, report=report)
+    if report and heads >= 4:
+        body = doc.paragraphs[start:]
+        if body:
+            body[0].paragraph_format.page_break_before = True
+    doc.core_properties.title = title
     add_footer(doc, title)
     doc.save(dst)
 
