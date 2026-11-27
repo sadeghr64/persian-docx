@@ -148,7 +148,8 @@ overwritten, with a warning printed; pass `--no-clobber` to skip instead. See
 
 ```bash
 git clone https://github.com/sadeghr64/persian-docx.git
-cp -r persian-docx/persian-docx ~/.claude/skills/persian-docx
+mkdir -p ~/.claude/skills/persian-docx
+cp -R persian-docx/persian-docx/. ~/.claude/skills/persian-docx/
 ```
 
 Then `/persian-docx` in any session. For a single project, put it in the project's
@@ -172,19 +173,24 @@ Then **Customize → Skills** in the Claude app, and add the zip. The skill fold
 
 ### Other agents and tools
 
-`SKILL.md` follows the Agent Skills open format — plain Markdown with YAML frontmatter
-(`name`, `description`). Nothing in the body depends on any particular vendor, so it is
-portable to anything that reads instruction files. Keep `references/` alongside `SKILL.md`
-when copying it; when pasting the skill body, also provide its linked guides or accessible
-paths to them:
+A repository URL is a pointer; it does not load or activate the skill in another assistant.
+Choose the route based on what the destination can actually read and run:
 
-| Tool | How |
+| Destination | What to provide |
 |---|---|
-| Cursor | Copy `SKILL.md` into `.cursor/rules/persian-docx.mdc` |
-| GitHub Copilot | Copy the body into `.github/copilot-instructions.md` |
-| Gemini CLI / Codex / OpenCode / Cline | Point the agent at `SKILL.md`, or paste it into the project instruction file |
-| Any LLM chat | Paste the body as context before asking for a Persian Word document |
-| No agent at all | Read it as a reference and use `fa_docx.py` directly |
+| An agent that can load skills and read local files | Install the entire inner `persian-docx/` folder, including `SKILL.md`, `WRITE-PERSIAN.md`, `references/` and `scripts/`. Replace an older installed copy when updating. |
+| A chat without skill installation or shell access | Attach [`WRITE-PERSIAN.md`](persian-docx/WRITE-PERSIAN.md), or paste its contents before the brief. It includes the complete prose workflow for chat and does not depend on scripts or linked files. |
+| A chat with browser access only | Point it directly to the [standalone guide](persian-docx/WRITE-PERSIAN.md) and explicitly ask it to read the full file and use it. If it cannot read the full text, attach or paste it instead. |
+
+<div dir="rtl">
+
+برای استفاده در چت، این متن را همراه فایل راهنما بفرستید:
+
+> «فایل پیوست `WRITE-PERSIAN.md` را کامل بخوان و به‌عنوان دستور نگارش اجرا کن. گزارش را برای [مخاطب] و با هدف [هدف] بنویس. پیش از تحویل، روانی نثر و وفاداری به شواهد را جداگانه بررسی کن. بیرون گزارش، شناسه‌ی راهنما، کنترل‌های واقعاً انجام‌شده و یک نمونه از اصلاح پیش‌نویس یا متن مبنا را بنویس.»
+
+اگر چت فقط متن تولید می‌کند، این مسیر بازخوانی نثر را پوشش می‌دهد؛ برای ساخت و کنترل Word از نصب کامل در محیط دارای ابزار استفاده کنید. اعلام شناسه به‌تنهایی گواه اجرای دستورها نیست.
+
+</div>
 
 ---
 
